@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits, IntentsBitField } = require('discord.js');
+const fetch = require('node-fetch');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.MessageContent] });
 const { TOKEN } = require('../config/config.json');
 
@@ -23,17 +24,20 @@ client.on('messageCreate', async (message) => {
         message.channel.send("こんにちは！おさかなです！");
     }
 
-    if(message.content === '/tenki') {
-        const result = getTemplature();
+    if(message.content === 'にゃーん') {
+        const url = await getCatImageUrl();
 
-        message.channel.send(result);
+        message.channel.send(url);
     }
 });
 
-function getTemplature() {
-    //
+async function getCatImageUrl() {
+    const response = await fetch("https://api.thecatapi.com/v1/images/search");
+    const json = await response.json();
 
-    return '';
+    console.log(json);
+
+    return json[0].url;
 }
 
 client.login(TOKEN);
